@@ -3,19 +3,19 @@ FROM DUAL;
 --==>> SCOTT
 
 
---¡Û »ý¼ºÇÑ ÇÁ·Î½ÃÀú°¡ Á¦´ë·Î ÀÛµ¿ÇÏ´ÂÁöÀÇ ¿©ºÎ È®ÀÎ -> ÇÁ·Î½ÃÀú È£Ãâ
--- ÇÁ·Î½ÃÀú¸í : PRC_STUDENTS_INSERT()
+--â—‹ ìƒì„±í•œ í”„ë¡œì‹œì €ê°€ ì œëŒ€ë¡œ ìž‘ë™í•˜ëŠ”ì§€ì˜ ì—¬ë¶€ í™•ì¸ -> í”„ë¡œì‹œì € í˜¸ì¶œ
+-- í”„ë¡œì‹œì €ëª… : PRC_STUDENTS_INSERT()
 
-EXEC PRC_STUDENTS_INSERT('batman', 'java006$', '±èÁ¾¹ü', '010-2222-2222','¼­¿ï ¸¶Æ÷±¸');
---==>> PL/SQL ÇÁ·Î½ÃÀú°¡ ¼º°øÀûÀ¸·Î ¿Ï·áµÇ¾ú½À´Ï´Ù.
+EXEC PRC_STUDENTS_INSERT('batman', 'java006$', 'ê¹€ì¢…ë²”', '010-2222-2222','ì„œìš¸ ë§ˆí¬êµ¬');
+--==>> PL/SQL í”„ë¡œì‹œì €ê°€ ì„±ê³µì ìœ¼ë¡œ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.
 
---¡Û Å×ÀÌºí È®ÀÎ
+--â—‹ í…Œì´ë¸” í™•ì¸
 SELECT *
 FROM TBL_STUDENTS;
 --==>>
 /*
-superman	±èÇö¿ì	010-1111-1111	Á¦ÁÖµµ ¼­±ÍÆ÷½Ã
-batman	    ±èÁ¾¹ü	010-2222-2222	¼­¿ï ¸¶Æ÷±¸
+superman	ê¹€í˜„ìš°	010-1111-1111	ì œì£¼ë„ ì„œê·€í¬ì‹œ
+batman	    ê¹€ì¢…ë²”	010-2222-2222	ì„œìš¸ ë§ˆí¬êµ¬
 */
 SELECT *
 FROM TBL_IDPW;
@@ -25,8 +25,8 @@ superman	java006$
 batman	    java006$
 */
 
---¡Û ÇÐ¹ø, ÀÌ¸§, ±¹¾îÁ¡¼ö, ¿µ¾îÁ¡¼ö, ¼öÇÐÁ¡¼ö µ¥ÀÌÅÍ¸¦
---   ÀÔ·Â¹ÞÀ» ¼ö ÀÖ´Â ½Ç½À Å×ÀÌºí »ý¼º(TBL_SUNGJUK)
+--â—‹ í•™ë²ˆ, ì´ë¦„, êµ­ì–´ì ìˆ˜, ì˜ì–´ì ìˆ˜, ìˆ˜í•™ì ìˆ˜ ë°ì´í„°ë¥¼
+--   ìž…ë ¥ë°›ì„ ìˆ˜ ìžˆëŠ” ì‹¤ìŠµ í…Œì´ë¸” ìƒì„±(TBL_SUNGJUK)
 
 CREATE TABLE TBL_SUNGJUK
 ( HAKBUN    NUMBER
@@ -36,26 +36,26 @@ CREATE TABLE TBL_SUNGJUK
 , MAT       NUMBER(3)
 , CONSTRAINT SUNGJUK_HAKBUN_PK PRIMARY KEY(HAKBUN)
 );
---==>> Table TBL_SUNGJUKÀÌ(°¡) »ý¼ºµÇ¾ú½À´Ï´Ù.
+--==>> Table TBL_SUNGJUKì´(ê°€) ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.
 
---¡Û »ý¼ºµÈ Å×ÀÌºí¿¡ ÄÃ·³ Ãß°¡
---   (ÃÑÁ¡ -> TOT, Æò±Õ -> AVG, µî±Þ-> GRADE)
+--â—‹ ìƒì„±ëœ í…Œì´ë¸”ì— ì»¬ëŸ¼ ì¶”ê°€
+--   (ì´ì  -> TOT, í‰ê·  -> AVG, ë“±ê¸‰-> GRADE)
 
 
 ALTER TABLE TBL_SUNGJUK
 ADD (TOT NUMBER(3), AVG NUMBER(4,1), GRADE CHAR);
---==>> Table TBL_SUNGJUKÀÌ(°¡) º¯°æµÇ¾ú½À´Ï´Ù.
+--==>> Table TBL_SUNGJUKì´(ê°€) ë³€ê²½ë˜ì—ˆìŠµë‹ˆë‹¤.
 
---¡Ø ¿©±â¼­ Ãß°¡ÇÑ ÄÃ·³¿¡ ´ëÇÑ Ç×¸ñÀº
---   ÇÁ·Î½ÃÀú ½Ç½ÀÀ» À§ÇØ Ãß°¡ÇÑ °ÍÀÏ »Ó
---   ½ÇÁ¦ Å×ÀÌºí ±¸Á¶¿¡ ÀûÇÕÇÏÁöµµ, ¹Ù¶÷Á÷ÇÏÁöµµ ¾ÊÀº ³»¿ëÀÌ´Ù.
+--â€» ì—¬ê¸°ì„œ ì¶”ê°€í•œ ì»¬ëŸ¼ì— ëŒ€í•œ í•­ëª©ì€
+--   í”„ë¡œì‹œì € ì‹¤ìŠµì„ ìœ„í•´ ì¶”ê°€í•œ ê²ƒì¼ ë¿
+--   ì‹¤ì œ í…Œì´ë¸” êµ¬ì¡°ì— ì í•©í•˜ì§€ë„, ë°”ëžŒì§í•˜ì§€ë„ ì•Šì€ ë‚´ìš©ì´ë‹¤.
 
 
---¡Û º¯°æµÈ Å×ÀÌºí ±¸Á¶ È®ÀÎ
+--â—‹ ë³€ê²½ëœ í…Œì´ë¸” êµ¬ì¡° í™•ì¸
 DESC TBL_SUNGJUK;
 --==>>
 /*
-ÀÌ¸§     ³Î?       À¯Çü           
+ì´ë¦„     ë„?       ìœ í˜•           
 ------ -------- ------------ 
 HAKBUN NOT NULL NUMBER       
 NAME            VARCHAR2(40) 
@@ -69,194 +69,193 @@ GRADE           CHAR(1)
 
 
 
--- ÇÁ·Î½ÃÀú È®ÀÎ
+-- í”„ë¡œì‹œì € í™•ì¸
 
-EXEC PRC_SUNGJUK_INSERT(1,'¹ÚÁ¾È£',90,80,70);
+EXEC PRC_SUNGJUK_INSERT(1,'ë°•ì¢…í˜¸',90,80,70);
 
 
--- Å×ÀÌºí È®ÀÎ
+-- í…Œì´ë¸” í™•ì¸
 
 SELECT *
 FROM TBL_SUNGJUK;
 
 
-
--- ÇÁ·Î½ÃÀú È®ÀÎ
+-- í”„ë¡œì‹œì € í™•ì¸
 
 EXEC PRC_SUNGJUK_UPDATE(1,50,50,50);
 
--- Å×ÀÌºí È®ÀÎ
+-- í…Œì´ë¸” í™•ì¸
 
 SELECT *
 FROM TBL_SUNGJUK;
---==>> 1	¹ÚÁ¾È£	50	50	50	150	50	F
+--==>> 1	ë°•ì¢…í˜¸	50	50	50	150	50	F
 
 
--- ÇÁ·Î½ÃÀú È®ÀÎ
-EXEC PRC_STUDENTS_UPDATE('superman', 'java006$' ,'010-9999-9999','´ëÀü');
+-- í”„ë¡œì‹œì € í™•ì¸
+EXEC PRC_STUDENTS_UPDATE('superman', 'java006$' ,'010-9999-9999','ëŒ€ì „');
 
--- Å×ÀÌºí È®ÀÎ
+-- í…Œì´ë¸” í™•ì¸
 SELECT *
 FROM TBL_STUDENTS;
 
 --==>>
 /*
-superman	±èÇö¿ì	010-9999-9999	´ëÀü
-batman	    ±èÁ¾¹ü	010-2222-2222	¼­¿ï ¸¶Æ÷±¸
+superman	ê¹€í˜„ìš°	010-9999-9999	ëŒ€ì „
+batman	    ê¹€ì¢…ë²”	010-2222-2222	ì„œìš¸ ë§ˆí¬êµ¬
 */
 
 DESC TBL_INSA;
 
 
--- ÇÁ·Î½ÃÀú È®ÀÎ
-EXEC PRC_INSA_INSERT('¿ÀÁöÀº', '901212-2234567', SYSDATE, '¼­¿ï', '010-3213-6546', '¿µ¾÷ºÎ', '´ë¸®', 1000000, 200000);
+-- í”„ë¡œì‹œì € í™•ì¸
+EXEC PRC_INSA_INSERT('ì˜¤ì§€ì€', '901212-2234567', SYSDATE, 'ì„œìš¸', '010-3213-6546', 'ì˜ì—…ë¶€', 'ëŒ€ë¦¬', 1000000, 200000);
 
--- Å×ÀÌºí È®ÀÎ
+-- í…Œì´ë¸” í™•ì¸
 
 SELECT *
 FROM TBL_INSA;
---==>> 1061	¿ÀÁöÀº	901212-2234567	19/09/26	¼­¿ï	010-3213-6546	¿µ¾÷ºÎ	´ë¸®	1000000	200000
+--==>> 1061	ì˜¤ì§€ì€	901212-2234567	19/09/26	ì„œìš¸	010-3213-6546	ì˜ì—…ë¶€	ëŒ€ë¦¬	1000000	200000
 
 -------------------------------------------------------------------------------------------------------
 
---¡Û ½Ç½À Å×ÀÌºí »ý¼º (TBL_»óÇ°)
-CREATE TABLE TBL_»óÇ°
-( »óÇ°ÄÚµå      VARCHAR2(20)
-, »óÇ°¸í        VARCHAR2(100)
-, ¼ÒºñÀÚ°¡°Ý    NUMBER
-, Àç°í¼ö·®      NUMBER  DEFAULT 0
-, CONSTRAINT »óÇ°_»óÇ°ÄÚµå_PK PRIMARY KEY(»óÇ°ÄÚµå)
+--â—‹ ì‹¤ìŠµ í…Œì´ë¸” ìƒì„± (TBL_ìƒí’ˆ)
+CREATE TABLE TBL_ìƒí’ˆ
+( ìƒí’ˆì½”ë“œ      VARCHAR2(20)
+, ìƒí’ˆëª…        VARCHAR2(100)
+, ì†Œë¹„ìžê°€ê²©    NUMBER
+, ìž¬ê³ ìˆ˜ëŸ‰      NUMBER  DEFAULT 0
+, CONSTRAINT ìƒí’ˆ_ìƒí’ˆì½”ë“œ_PK PRIMARY KEY(ìƒí’ˆì½”ë“œ)
 );
---==>> Table TBL_»óÇ°ÀÌ(°¡) »ý¼ºµÇ¾ú½À´Ï´Ù.
--- TBL_»óÇ° Å×ÀÌºíÀÇ »óÇ°ÄÚµå¸¦ ±âº»Å°(PK) Á¦¾àÁ¶°Ç ¼³Á¤
+--==>> Table TBL_ìƒí’ˆì´(ê°€) ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.
+-- TBL_ìƒí’ˆ í…Œì´ë¸”ì˜ ìƒí’ˆì½”ë“œë¥¼ ê¸°ë³¸í‚¤(PK) ì œì•½ì¡°ê±´ ì„¤ì •
 
 
---¡Û ½Ç½À Å×ÀÌºí »ý¼º(TBL_ÀÔ°í)
-CREATE TABLE TBL_ÀÔ°í
-( ÀÔ°í¹øÈ£  NUMBER
-, »óÇ°ÄÚµå  VARCHAR2(20)
-, ÀÔ°íÀÏÀÚ  DATE DEFAULT SYSDATE
-, ÀÔ°í¼ö·®  NUMBER
-, ÀÔ°í´Ü°¡  NUMBER
-, CONSTRAINT ÀÔ°í_ÀÔ°í¹øÈ£_PK PRIMARY KEY(ÀÔ°í¹øÈ£)
-, CONSTRAINT ÀÔ°í_»óÇ°ÄÚµå_FK FOREIGN KEY(»óÇ°ÄÚµå)
-                                REFERENCES TBL_»óÇ°(»óÇ°ÄÚµå)
+--â—‹ ì‹¤ìŠµ í…Œì´ë¸” ìƒì„±(TBL_ìž…ê³ )
+CREATE TABLE TBL_ìž…ê³ 
+( ìž…ê³ ë²ˆí˜¸  NUMBER
+, ìƒí’ˆì½”ë“œ  VARCHAR2(20)
+, ìž…ê³ ì¼ìž  DATE DEFAULT SYSDATE
+, ìž…ê³ ìˆ˜ëŸ‰  NUMBER
+, ìž…ê³ ë‹¨ê°€  NUMBER
+, CONSTRAINT ìž…ê³ _ìž…ê³ ë²ˆí˜¸_PK PRIMARY KEY(ìž…ê³ ë²ˆí˜¸)
+, CONSTRAINT ìž…ê³ _ìƒí’ˆì½”ë“œ_FK FOREIGN KEY(ìƒí’ˆì½”ë“œ)
+                                REFERENCES TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ)
 );
---==>> Table TBL_ÀÔ°íÀÌ(°¡) »ý¼ºµÇ¾ú½À´Ï´Ù.
--- TBL_ÀÔ°í Å×ÀÌºíÀÇ ÀÔ°í¹øÈ£¸¦ ±âº»Å°(PK) Á¦¾àÁ¶°Ç ¼³Á¤
--- TBL_ÀÔ°í Å×ÀÌºíÀÇ »óÇ°ÄÚµå´Â TBL_»óÇ° Å×ÀÌºíÀÇ »óÇ°ÄÚµå¸¦
--- ÂüÁ¶ÇÒ ¼ö ÀÖµµ·Ï ¿Ü·¡Å°(FK) Á¦¾àÁ¶°Ç ¼³Á¤
+--==>> Table TBL_ìž…ê³ ì´(ê°€) ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.
+-- TBL_ìž…ê³  í…Œì´ë¸”ì˜ ìž…ê³ ë²ˆí˜¸ë¥¼ ê¸°ë³¸í‚¤(PK) ì œì•½ì¡°ê±´ ì„¤ì •
+-- TBL_ìž…ê³  í…Œì´ë¸”ì˜ ìƒí’ˆì½”ë“œëŠ” TBL_ìƒí’ˆ í…Œì´ë¸”ì˜ ìƒí’ˆì½”ë“œë¥¼
+-- ì°¸ì¡°í•  ìˆ˜ ìžˆë„ë¡ ì™¸ëž˜í‚¤(FK) ì œì•½ì¡°ê±´ ì„¤ì •
 
 
---¡Û TBL_»óÇ° Å×ÀÌºí¿¡ »óÇ°Á¤º¸ ÀÔ·Â
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('H001','½ºÅ©·ù¹Ù',500);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('H002','¾Æ¸À³ª',300);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('H003','µÅÁö¹Ù',700);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('H004','Äí¾ØÅ©',300);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('H005','º¸¼®¹Ù',800);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('H006','ÁÒ½º¹Ù',600);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('H007','¸Þ°¡Åæ¹Ù',700);
---==>> 1 Çà ÀÌ(°¡) »ðÀÔµÇ¾ú½À´Ï´Ù. *7
+--â—‹ TBL_ìƒí’ˆ í…Œì´ë¸”ì— ìƒí’ˆì •ë³´ ìž…ë ¥
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('H001','ìŠ¤í¬ë¥˜ë°”',500);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('H002','ì•„ë§›ë‚˜',300);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('H003','ë¼ì§€ë°”',700);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('H004','ì¿ ì•¤í¬',300);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('H005','ë³´ì„ë°”',800);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('H006','ì£ ìŠ¤ë°”',600);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('H007','ë©”ê°€í†¤ë°”',700);
+--==>> 1 í–‰ ì´(ê°€) ì‚½ìž…ë˜ì—ˆìŠµë‹ˆë‹¤. *7
 
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('C001','±¸±¸ÄÜ',1000);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('C002','¿ùµåÄÜ',1500);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('C003','ºê¶óº¸ÄÜ',1500);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('C004','½´ÆÛÄÜ',1300);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('C005','µÅÁö¹ÙÄÜ',1200);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('C006','Å©·±Ä¡ÄÜ',1700);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('C007','¿ä¸¾¶§ÄÜ',1600);
---==>> 1 Çà ÀÌ(°¡) »ðÀÔµÇ¾ú½À´Ï´Ù. * 7
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('C001','êµ¬êµ¬ì½˜',1000);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('C002','ì›”ë“œì½˜',1500);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('C003','ë¸Œë¼ë³´ì½˜',1500);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('C004','ìŠˆí¼ì½˜',1300);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('C005','ë¼ì§€ë°”ì½˜',1200);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('C006','í¬ëŸ°ì¹˜ì½˜',1700);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('C007','ìš”ë§˜ë•Œì½˜',1600);
+--==>> 1 í–‰ ì´(ê°€) ì‚½ìž…ë˜ì—ˆìŠµë‹ˆë‹¤. * 7
 
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('E001','ºØ¾î½Î¸¸ÄÚ',2000);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('E002','´õÀ§»ç³É',1500);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('E003','°ÅºÏ¾Ë',1900);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('E004','¼³·¹ÀÓ',2100);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('E005','ÇÏ°Õ´ÙÁîµþ±â¸À',4700);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('E006','¿¢¼³·±Æ®',3500);
-INSERT INTO TBL_»óÇ°(»óÇ°ÄÚµå, »óÇ°¸í, ¼ÒºñÀÚ°¡°Ý)
-VALUES('E007','Åõ°Ô´õ',4000);
---==>> 1 Çà ÀÌ(°¡) »ðÀÔµÇ¾ú½À´Ï´Ù. * 7
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('E001','ë¶•ì–´ì‹¸ë§Œì½”',2000);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('E002','ë”ìœ„ì‚¬ëƒ¥',1500);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('E003','ê±°ë¶ì•Œ',1900);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('E004','ì„¤ë ˆìž„',2100);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('E005','í•˜ê²ë‹¤ì¦ˆë”¸ê¸°ë§›',4700);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('E006','ì—‘ì„¤ëŸ°íŠ¸',3500);
+INSERT INTO TBL_ìƒí’ˆ(ìƒí’ˆì½”ë“œ, ìƒí’ˆëª…, ì†Œë¹„ìžê°€ê²©)
+VALUES('E007','íˆ¬ê²Œë”',4000);
+--==>> 1 í–‰ ì´(ê°€) ì‚½ìž…ë˜ì—ˆìŠµë‹ˆë‹¤. * 7
 
--- È®ÀÎ
+-- í™•ì¸
 SELECT *
-FROM TBL_»óÇ°;
+FROM TBL_ìƒí’ˆ;
 --==>>
 /*
-H001	½ºÅ©·ù¹Ù        	500	    0
-H002	¾Æ¸À³ª	        300	    0
-H003	µÅÁö¹Ù	        700 	0
-H004	Äí¾ØÅ©	        300 	0
-H005	º¸¼®¹Ù	        800 	0
-H006	ÁÒ½º¹Ù	        600 	0
-H007	¸Þ°¡Åæ¹Ù	        700 	0
-COO1	±¸±¸ÄÜ	        1000	0
-COO2	¿ùµåÄÜ	        1500	0
-COO3	ºê¶óº¸ÄÜ	        1500	0
-COO4	½´ÆÛÄÜ	        1300	0
-COO5	µÅÁö¹ÙÄÜ	        1200	0
-COO6	Å©·±Ä¡ÄÜ	        1700	0
-COO7	¿ä¸¾¶§ÄÜ	        1600	0
-EOO1	ºØ¾î½Î¸¸ÄÚ	    2000	0
-EOO2	´õÀ§»ç³É	        1500	0
-EOO3	°ÅºÏ¾Ë	        1900	0
-EOO4	¼³·¹ÀÓ	        2100	0
-EOO5	ÇÏ°Õ´ÙÁîµþ±â¸À	4700	0
-EOO6	¿¢¼³·±Æ®	        3500	0
-EOO7	Åõ°Ô´õ	        4000	0
+H001	ìŠ¤í¬ë¥˜ë°”        	500	    0
+H002	ì•„ë§›ë‚˜	        300	    0
+H003	ë¼ì§€ë°”	        700 	0
+H004	ì¿ ì•¤í¬	        300 	0
+H005	ë³´ì„ë°”	        800 	0
+H006	ì£ ìŠ¤ë°”	        600 	0
+H007	ë©”ê°€í†¤ë°”	        700 	0
+COO1	êµ¬êµ¬ì½˜	        1000	0
+COO2	ì›”ë“œì½˜	        1500	0
+COO3	ë¸Œë¼ë³´ì½˜	        1500	0
+COO4	ìŠˆí¼ì½˜	        1300	0
+COO5	ë¼ì§€ë°”ì½˜	        1200	0
+COO6	í¬ëŸ°ì¹˜ì½˜	        1700	0
+COO7	ìš”ë§˜ë•Œì½˜	        1600	0
+EOO1	ë¶•ì–´ì‹¸ë§Œì½”	    2000	0
+EOO2	ë”ìœ„ì‚¬ëƒ¥	        1500	0
+EOO3	ê±°ë¶ì•Œ	        1900	0
+EOO4	ì„¤ë ˆìž„	        2100	0
+EOO5	í•˜ê²ë‹¤ì¦ˆë”¸ê¸°ë§›	4700	0
+EOO6	ì—‘ì„¤ëŸ°íŠ¸	        3500	0
+EOO7	íˆ¬ê²Œë”	        4000	0
 */
 
 
---¡Û Ä¿¹Ô
+--â—‹ ì»¤ë°‹
 COMMIT;
---==>> Ä¿¹Ô ¿Ï·á.
+--==>> ì»¤ë°‹ ì™„ë£Œ.
 
---¡Û ³¯Â¥ ¼¼¼Ç ¼³Á¤ º¯°æ
+--â—‹ ë‚ ì§œ ì„¸ì…˜ ì„¤ì • ë³€ê²½
 ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD';
---==>> SessionÀÌ(°¡) º¯°æµÇ¾ú½À´Ï´Ù.
+--==>> Sessionì´(ê°€) ë³€ê²½ë˜ì—ˆìŠµë‹ˆë‹¤.
 
 
---¡Û TBL_ÀÔ°í Å×ÀÌºí¿¡ ¡ºÀÔ°í¡»ÀÌº¥Æ® ¹ß»ý ½Ã...
---  °ü·Ã Å×ÀÌºí¿¡¼­ ¼öÇàµÇ¾î¾ß ÇÏ´Â ³»¿ë
---  ¨ç INSERT -> TBL_ÀÔ°í
---     INSERT INTO TBL_ÀÔ°í(ÀÔ°í¹øÈ£, »óÇ°ÄÚµå, ÀÔ°íÀÏÀÚ, ÀÔ°í¼ö·®, ÀÔ°í´Ü°¡)
+--â—‹ TBL_ìž…ê³  í…Œì´ë¸”ì— ã€Žìž…ê³ ã€ì´ë²¤íŠ¸ ë°œìƒ ì‹œ...
+--  ê´€ë ¨ í…Œì´ë¸”ì—ì„œ ìˆ˜í–‰ë˜ì–´ì•¼ í•˜ëŠ” ë‚´ìš©
+--  â‘  INSERT -> TBL_ìž…ê³ 
+--     INSERT INTO TBL_ìž…ê³ (ìž…ê³ ë²ˆí˜¸, ìƒí’ˆì½”ë“œ, ìž…ê³ ì¼ìž, ìž…ê³ ìˆ˜ëŸ‰, ìž…ê³ ë‹¨ê°€)
 --     VALUES(1,'H001', SYSDATE, 20, 400);
 
---  ¨è UPDATE -> TBL_»óÇ°
---     UPDATE TBL_»óÇ°
---     SET Àç°í¼ö·® = ±âÁ¸Àç°í¼ö·® + 20(ÀÔ°í¼ö·®)
---     WHERE »óÇ°ÄÚµå = 'H001';
+--  â‘¡ UPDATE -> TBL_ìƒí’ˆ
+--     UPDATE TBL_ìƒí’ˆ
+--     SET ìž¬ê³ ìˆ˜ëŸ‰ = ê¸°ì¡´ìž¬ê³ ìˆ˜ëŸ‰ + 20(ìž…ê³ ìˆ˜ëŸ‰)
+--     WHERE ìƒí’ˆì½”ë“œ = 'H001';
 
 
---¡Û »ý¼ºÇÑ ÇÁ·Î½ÃÀú°¡ Á¦´ë·Î ÀÛµ¿ÇÏ´ÂÁöÀÇ ¿©ºÎ È®ÀÎ -> ÇÁ·Î½ÃÀú È£Ãâ
-EXEC PRC_ÀÔ°í_INSERT('C001', 20, 800);
---==>> PL/SQL ÇÁ·Î½ÃÀú°¡ ¼º°øÀûÀ¸·Î ¿Ï·áµÇ¾ú½À´Ï´Ù.
+--â—‹ ìƒì„±í•œ í”„ë¡œì‹œì €ê°€ ì œëŒ€ë¡œ ìž‘ë™í•˜ëŠ”ì§€ì˜ ì—¬ë¶€ í™•ì¸ -> í”„ë¡œì‹œì € í˜¸ì¶œ
+EXEC PRC_ìž…ê³ _INSERT('C001', 20, 800);
+--==>> PL/SQL í”„ë¡œì‹œì €ê°€ ì„±ê³µì ìœ¼ë¡œ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.
 
-EXEC PRC_ÀÔ°í_INSERT('C001', 30, 750);
---==>> PL/SQL ÇÁ·Î½ÃÀú°¡ ¼º°øÀûÀ¸·Î ¿Ï·áµÇ¾ú½À´Ï´Ù.
+EXEC PRC_ìž…ê³ _INSERT('C001', 30, 750);
+--==>> PL/SQL í”„ë¡œì‹œì €ê°€ ì„±ê³µì ìœ¼ë¡œ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.
 
 
 SELECT *
-FROM TBL_ÀÔ°í;
+FROM TBL_ìž…ê³ ;
 --==>>
 /*
 2   C001   2019-09-26   20   800
@@ -264,17 +263,17 @@ FROM TBL_ÀÔ°í;
 */
 
 SELECT *
-FROM TBL_»óÇ°;
---==>> C001   ±¸±¸ÄÜ   1000   50
+FROM TBL_ìƒí’ˆ;
+--==>> C001   êµ¬êµ¬ì½˜   1000   50
 
 
-EXEC PRC_ÀÔ°í_INSERT('H001', 50, 350);
-EXEC PRC_ÀÔ°í_INSERT('H001', 10, 450);
-EXEC PRC_ÀÔ°í_INSERT('H001', 20, 300);
+EXEC PRC_ìž…ê³ _INSERT('H001', 50, 350);
+EXEC PRC_ìž…ê³ _INSERT('H001', 10, 450);
+EXEC PRC_ìž…ê³ _INSERT('H001', 20, 300);
 
 
 SELECT *
-FROM TBL_ÀÔ°í;
+FROM TBL_ìž…ê³ ;
 --==>>
 /*
 4   H001   2019-09-26   50   350
@@ -285,23 +284,23 @@ FROM TBL_ÀÔ°í;
 
 
 SELECT *
-FROM TBL_ÀÔ°í;
+FROM TBL_ìž…ê³ ;
 
 SELECT *
-FROM TBL_»óÇ°;
+FROM TBL_ìƒí’ˆ;
 
 COMMIT;
 
---¡á¡á¡á ÇÁ·Î½ÃÀú ³»¿¡¼­ÀÇ ¿¹¿Ü Ã³¸® ¡á¡á¡á--
+--â– â– â–  í”„ë¡œì‹œì € ë‚´ì—ì„œì˜ ì˜ˆì™¸ ì²˜ë¦¬ â– â– â– --
 
---¡Û Å×ÀÌºí »ý¼º(TBL_MEMBER)
+--â—‹ í…Œì´ë¸” ìƒì„±(TBL_MEMBER)
 CREATE TABLE TBL_MEMBER
 ( NUM   NUMBER
 , NAME  VARCHAR2(30)
 , TEL   VARCHAR2(60)
 , CITY  VARCHAR2(60)
 );
---==>> Table TBL_MEMBERÀÌ(°¡) »ý¼ºµÇ¾ú½À´Ï´Ù.
+--==>> Table TBL_MEMBERì´(ê°€) ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.
 
 
 
