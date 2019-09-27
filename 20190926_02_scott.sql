@@ -2,7 +2,6 @@ SELECT USER
 FROM DUAL;
 --==>> SCOTT
 
-
 --○ 생성한 프로시저가 제대로 작동하는지의 여부 확인 -> 프로시저 호출
 -- 프로시저명 : PRC_STUDENTS_INSERT()
 
