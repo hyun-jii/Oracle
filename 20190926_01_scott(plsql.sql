@@ -5,110 +5,109 @@ FROM DUAL;
 
 ----------------------------------------------------------------------------------
 
---¡Ø Âü°í
+--â€» ì°¸ê³ 
 
 -- 1. INSERT, UPDATE, DELETE,(MERGE)
 --==>> DML(DATA MANUPLATION LANGUAGE)
--- COMMIT / ROLLBACK ÀÌ ÇÊ¿äÇÏ´Ù.
+-- COMMIT / ROLLBACK ì´ í•„ìš”í•˜ë‹¤.
 
 -- 2. CREATE, DROP, ALTER(TRUNCATE)
 --==>> DDL(DATA DEFINITION LANGUAGE)
--- ½ÇÇàÇÏ¸é ÀÚµ¿À¸·Î COMMIT µÈ´Ù.
+-- ì‹¤í–‰í•˜ë©´ ìžë™ìœ¼ë¡œ COMMIT ëœë‹¤.
 
 -- 3. GRANT, REVOKE
 --==>> DCL (DATA CONTRL LANGUAGE)
--- ½ÇÇàÇÏ¸é ÀÚµ¿À¸·Î COMMIT µÈ´Ù.
+-- ì‹¤í–‰í•˜ë©´ ìžë™ìœ¼ë¡œ COMMIT ëœë‹¤.
 
 -- 4. COMMIT, ROLLBACK
 --==>> TCL(TRANSACTION CONTROL LANGUAGE)
 
--- Á¤Àû PL/SQL¹®  -> DML¹®, TCL¹®¸¸ »ç¿ë °¡´ÉÇÏ´Ù.
--- µ¿Àû PL/SQL¹®  -> DML¹®, DDL¹®, DCL¹®, TCL¹® »ç¿ë °¡´ÉÇÏ´Ù.
+-- ì •ì  PL/SQLë¬¸  -> DMLë¬¸, TCLë¬¸ë§Œ ì‚¬ìš© ê°€ëŠ¥í•˜ë‹¤.
+-- ë™ì  PL/SQLë¬¸  -> DMLë¬¸, DDLë¬¸, DCLë¬¸, TCLë¬¸ ì‚¬ìš© ê°€ëŠ¥í•˜ë‹¤.
 
 
 ------------------------------------------------------------------------------------
 
---¡á¡á¡á PROCEDURE(ÇÁ·Î½ÃÀú) ¡á¡á¡á--
+--â– â– â–  PROCEDURE(í”„ë¡œì‹œì €) â– â– â– --
 
 
--- 1. PL/SQL ¿¡¼­ °¡Àå ´ëÇ¥ÀûÀÎ ±¸Á¶ÀÎ ½ºÅä¾îµå ÇÁ·Î½ÃÀú´Â
---    °³¹ßÀÚ°¡ ÀÚÁÖ ÀÛ¼ºÇØ¾ß ÇÏ´Â ¾÷¹«ÀÇ Èå¸§À»
---    ¹Ì¸® ÀÛ¼ºÇÏ¿© µ¥ÀÌÅÍº£ÀÌ½º ³»¿¡ ÀúÀåÇØ µÎ¾ú´Ù°¡
---    ÇÊ¿äÇÒ ¶§ ¸¶´Ù È£ÃâÇÏ¿© ½ÇÇàÇÒ ¼ö ÀÖµµ·Ï Ã³¸®ÇØ ÁÖ´Â ±¸¹®ÀÌ´Ù.
+-- 1. PL/SQL ì—ì„œ ê°€ìž¥ ëŒ€í‘œì ì¸ êµ¬ì¡°ì¸ ìŠ¤í† ì–´ë“œ í”„ë¡œì‹œì €ëŠ”
+--    ê°œë°œìžê°€ ìžì£¼ ìž‘ì„±í•´ì•¼ í•˜ëŠ” ì—…ë¬´ì˜ íë¦„ì„
+--    ë¯¸ë¦¬ ìž‘ì„±í•˜ì—¬ ë°ì´í„°ë² ì´ìŠ¤ ë‚´ì— ì €ìž¥í•´ ë‘ì—ˆë‹¤ê°€
+--    í•„ìš”í•  ë•Œ ë§ˆë‹¤ í˜¸ì¶œí•˜ì—¬ ì‹¤í–‰í•  ìˆ˜ ìžˆë„ë¡ ì²˜ë¦¬í•´ ì£¼ëŠ” êµ¬ë¬¸ì´ë‹¤.
 
--- 2. Çü½Ä ¹× ±¸Á¶
+-- 2. í˜•ì‹ ë° êµ¬ì¡°
 /*
-CREATE [OR REPLACE] PROCEDURE ÇÁ·Î½ÃÀú¸í
-[( ¸Å°³º¯¼ö IN µ¥ÀÌÅÍÅ¸ÀÔ
-  ,¸Å°³º¯¼ö OUT µ¥ÀÌÅÍÅ¸ÀÔ
-  ,¸Å°³º¯¼ö INOUT µ¥ÀÌÅÍÅ¸ÀÔ
+CREATE [OR REPLACE] PROCEDURE í”„ë¡œì‹œì €ëª…
+[( ë§¤ê°œë³€ìˆ˜ IN ë°ì´í„°íƒ€ìž…
+  ,ë§¤ê°œë³€ìˆ˜ OUT ë°ì´í„°íƒ€ìž…
+  ,ë§¤ê°œë³€ìˆ˜ INOUT ë°ì´í„°íƒ€ìž…
 )]
 IS
-    [-- ÁÖ¿ä º¯¼ö ¼±¾ð;]
+    [-- ì£¼ìš” ë³€ìˆ˜ ì„ ì–¸;]
 BEGIN
-    -- ½ÇÇà ±¸¹®;
+    -- ì‹¤í–‰ êµ¬ë¬¸;
     ...
     [EXCEPTION]
-        -- ¿¹¿Ü Ã³¸® ±¸¹®;
+        -- ì˜ˆì™¸ ì²˜ë¦¬ êµ¬ë¬¸;
 END;
 */
 
---¡Ø FUNCTION °ú ºñ±³ÇßÀ» ¶§ ¡ºRETURN ¹ÝÈ¯ÀÚ·áÇü¡» ºÎºÐÀÌ Á¸ÀçÇÏÁö ¾ÊÀ¸¸ç,
---   ¡ºRETURN¡»¹® ÀÚÃ¼µµ Á¸ÀçÇÏÁö ¾ÊÀ¸¸ç,
---   ÇÁ·Î½ÃÀú ½ÇÇà ½Ã ³Ñ°ÜÁÖ°Ô µÇ´Â ¸Å°³º¯¼öÀÇ Á¾·ù´Â
---   IN, OUT, INOUT À¸·Î ±¸ºÐµÈ´Ù.
+--â€» FUNCTION ê³¼ ë¹„êµí–ˆì„ ë•Œ ã€ŽRETURN ë°˜í™˜ìžë£Œí˜•ã€ ë¶€ë¶„ì´ ì¡´ìž¬í•˜ì§€ ì•Šìœ¼ë©°,
+--   ã€ŽRETURNã€ë¬¸ ìžì²´ë„ ì¡´ìž¬í•˜ì§€ ì•Šìœ¼ë©°,
+--   í”„ë¡œì‹œì € ì‹¤í–‰ ì‹œ ë„˜ê²¨ì£¼ê²Œ ë˜ëŠ” ë§¤ê°œë³€ìˆ˜ì˜ ì¢…ë¥˜ëŠ”
+--   IN, OUT, INOUT ìœ¼ë¡œ êµ¬ë¶„ëœë‹¤.
 
--- 3. ½ÇÇà(È£Ãâ)
+-- 3. ì‹¤í–‰(í˜¸ì¶œ)
 /*
-EXEC[UTE] ÇÁ·Î½ÃÀú¸í[(ÀÎ¼ö1, ÀÎ¼ö2,...)];
+EXEC[UTE] í”„ë¡œì‹œì €ëª…[(ì¸ìˆ˜1, ì¸ìˆ˜2,...)];
 */
 
+--â—‹ INSERT ì¿¼ë¦¬ ì‹¤í–‰ì„ í”„ë¡œì‹œì €ë¡œ ìž‘ì„±(INSERT í”„ë¡œì‹œì €)
 
---¡Û INSERT Äõ¸® ½ÇÇàÀ» ÇÁ·Î½ÃÀú·Î ÀÛ¼º(INSERT ÇÁ·Î½ÃÀú)
-
--- ½Ç½À Å×ÀÌºí »ý¼º(TBL_STUDENTS)
+-- ì‹¤ìŠµ í…Œì´ë¸” ìƒì„±(TBL_STUDENTS)
 CREATE TABLE TBL_STUDENTS
 ( ID        VARCHAR2(10)
 , NAME      VARCHAR2(40)
 , TEL       VARCHAR2(30)
 , ADDR      VARCHAR2(100)
 );
---==>> Table TBL_STUDENTSÀÌ(°¡) »ý¼ºµÇ¾ú½À´Ï´Ù.
+--==>> Table TBL_STUDENTSì´(ê°€) ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.
 
--- ½Ç½À Å×ÀÌºí »ý¼º(TBL_IDPW)
+-- ì‹¤ìŠµ í…Œì´ë¸” ìƒì„±(TBL_IDPW)
 CREATE TABLE TBL_IDPW
 ( ID    VARCHAR2(10)
 , PW    VARCHAR2(20)
 , CONSTRAINT IDPW_ID_PK PRIMARY KEY(ID)
 
 );
---==>> Table TBL_IDPWÀÌ(°¡) »ý¼ºµÇ¾ú½À´Ï´Ù.
+--==>> Table TBL_IDPWì´(ê°€) ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.
 
--- µÎ Å×ÀÌºí¿¡ µ¥ÀÌÅÍ ÀÔ·Â
+-- ë‘ í…Œì´ë¸”ì— ë°ì´í„° ìž…ë ¥
 INSERT INTO TBL_STUDENTS(ID, NAME, TEL, ADDR)
-VALUES('superman','±èÇö¿ì','010-1111-1111','Á¦ÁÖµµ ¼­±ÍÆ÷½Ã');
+VALUES('superman','ê¹€í˜„ìš°','010-1111-1111','ì œì£¼ë„ ì„œê·€í¬ì‹œ');
 INSERT INTO TBL_IDPW(ID,PW)
 VALUES('superman','java006$');
---==>> 1 Çà ÀÌ(°¡) »ðÀÔµÇ¾ú½À´Ï´Ù. *2
+--==>> 1 í–‰ ì´(ê°€) ì‚½ìž…ë˜ì—ˆìŠµë‹ˆë‹¤. *2
 
--- È®ÀÎ
+-- í™•ì¸
 SELECT *
 FROM TBL_STUDENTS;
---==>> superman	±èÇö¿ì	010-1111-1111	Á¦ÁÖµµ ¼­±ÍÆ÷½Ã
+--==>> superman	ê¹€í˜„ìš°	010-1111-1111	ì œì£¼ë„ ì„œê·€í¬ì‹œ
 
 SELECT *
 FROM TBL_IDPW;
 --==>> superman	java006$
 
 COMMIT;
---==>> Ä¿¹Ô ¿Ï·á.
+--==>> ì»¤ë°‹ ì™„ë£Œ.
 
--- À§ÀÇ ¾÷¹«¸¦ ¼öÇàÇÏ´Â ÇÁ·Î½ÃÀú(INSERT ÇÁ·Î½ÃÀú, ÀÔ·Â ÇÁ·Î½ÃÀú)¸¦ »ý¼ºÇÏ°Ô µÇ¸é
--- EXEC PRC_STUDENTS_INSERT('batman','java006$','±èÁ¾¹ü','010-2222-2222','¼­¿ï ¸¶Æ÷±¸');
--- ÀÌ¿Í °°ÀÌ ±¸¹® ÇÑ ÁÙ·Î ¾çÂÊ Å×ÀÌºí¿¡ µ¥ÀÌÅÍ¸¦ ¸ðµÎ Á¦´ë·Î ÀÔ·ÂÇÒ ¼ö ÀÖ´Ù.
+-- ìœ„ì˜ ì—…ë¬´ë¥¼ ìˆ˜í–‰í•˜ëŠ” í”„ë¡œì‹œì €(INSERT í”„ë¡œì‹œì €, ìž…ë ¥ í”„ë¡œì‹œì €)ë¥¼ ìƒì„±í•˜ê²Œ ë˜ë©´
+-- EXEC PRC_STUDENTS_INSERT('batman','java006$','ê¹€ì¢…ë²”','010-2222-2222','ì„œìš¸ ë§ˆí¬êµ¬');
+-- ì´ì™€ ê°™ì´ êµ¬ë¬¸ í•œ ì¤„ë¡œ ì–‘ìª½ í…Œì´ë¸”ì— ë°ì´í„°ë¥¼ ëª¨ë‘ ì œëŒ€ë¡œ ìž…ë ¥í•  ìˆ˜ ìžˆë‹¤.
 
 
--- ÇÁ·Î½ÃÀú »ý¼º
+-- í”„ë¡œì‹œì € ìƒì„±
  
 CREATE OR REPLACE PROCEDURE PRC_STUDENTS_INSERT
 ( V_ID      IN TBL_STUDENTS.ID%TYPE
@@ -127,22 +126,22 @@ BEGIN
     
     COMMIT;
 END;
---==>> Procedure PRC_STUDENTS_INSERTÀÌ(°¡) ÄÄÆÄÀÏµÇ¾ú½À´Ï´Ù.
+--==>> Procedure PRC_STUDENTS_INSERTì´(ê°€) ì»´íŒŒì¼ë˜ì—ˆìŠµë‹ˆë‹¤.
 
 
---¡Û µ¥ÀÌÅÍ ÀÔ·Â ½Ã Æ¯Á¤ Ç×¸ñÀÇ µ¥ÀÌÅÍ¸¸ ÀÔ·ÂÇÏ¸é
+--â—‹ ë°ì´í„° ìž…ë ¥ ì‹œ íŠ¹ì • í•­ëª©ì˜ ë°ì´í„°ë§Œ ìž…ë ¥í•˜ë©´
 --                 ------------------
---                  (ÇÐ¹ø, ÀÌ¸§, ±¹¾îÁ¡¼ö, ¿µ¾îÁ¡¼ö, ¼öÇÐÁ¡¼ö)
--- ³»ºÎÀûÀ¸·Î ÃÑÁ¡, Æò±Õ, µî±Þ Ç×¸ñÀÌ ÇÔ²² ÀÔ·Â Ã³¸®µÉ ¼ö ÀÖµµ·Ï ÇÏ´Â
--- ÇÁ·Î½ÃÀú¸¦ ÀÛ¼ºÇÑ´Ù.
--- ÇÁ·Î½ÃÀú¸í : PRC_SUNGJUK_INSERT()
+--                  (í•™ë²ˆ, ì´ë¦„, êµ­ì–´ì ìˆ˜, ì˜ì–´ì ìˆ˜, ìˆ˜í•™ì ìˆ˜)
+-- ë‚´ë¶€ì ìœ¼ë¡œ ì´ì , í‰ê· , ë“±ê¸‰ í•­ëª©ì´ í•¨ê»˜ ìž…ë ¥ ì²˜ë¦¬ë  ìˆ˜ ìžˆë„ë¡ í•˜ëŠ”
+-- í”„ë¡œì‹œì €ë¥¼ ìž‘ì„±í•œë‹¤.
+-- í”„ë¡œì‹œì €ëª… : PRC_SUNGJUK_INSERT()
 /*
-½ÇÇà ¿¹)
-EXEC PRC_SUNGJUK_INSERT(1,'¹ÚÁ¾È£',90,80,70);
+ì‹¤í–‰ ì˜ˆ)
+EXEC PRC_SUNGJUK_INSERT(1,'ë°•ì¢…í˜¸',90,80,70);
 
-ÇÁ·Î½ÃÀú È£Ãâ·Î Ã³¸®µÈ °á°ú
-ÇÐ¹ø  ÀÌ¸§  ±¹¾îÁ¡¼ö    ¿µ¾îÁ¡¼ö    ¼öÇÐÁ¡¼ö    ÃÑÁ¡  Æò±Õ  µî±Þ
- 1   ¹ÚÁ¾È£    90          80          70      240   80    B
+í”„ë¡œì‹œì € í˜¸ì¶œë¡œ ì²˜ë¦¬ëœ ê²°ê³¼
+í•™ë²ˆ  ì´ë¦„  êµ­ì–´ì ìˆ˜    ì˜ì–´ì ìˆ˜    ìˆ˜í•™ì ìˆ˜    ì´ì   í‰ê·   ë“±ê¸‰
+ 1   ë°•ì¢…í˜¸    90          80          70      240   80    B
 */
 
 
@@ -181,21 +180,21 @@ BEGIN
     COMMIT; 
     
 END;
---==>> Procedure PRC_SUNGJUK_INSERTÀÌ(°¡) ÄÄÆÄÀÏµÇ¾ú½À´Ï´Ù.
+--==>> Procedure PRC_SUNGJUK_INSERTì´(ê°€) ì»´íŒŒì¼ë˜ì—ˆìŠµë‹ˆë‹¤.
 
 
 
---¡Û TBL_SUNGJUK Å×ÀÌºí¿¡¼­ Æ¯Á¤ ÇÐ»ýÀÇ Á¡¼ö
---   (ÇÐ¹ø, ±¹¾îÁ¡¼ö, ¿µ¾îÁ¡¼ö, ¼öÇÐÁ¡¼ö) µ¥ÀÌÅÍ ¼öÁ¤ ½Ã
---   ÃÑÁ¡, Æò±Õ, µî±Þ±îÁö ¼öÁ¤ÇÏ´Â ÇÁ·Î½ÃÀú¸¦ ÀÛ¼ºÇÑ´Ù.
--- ÇÁ·Î½ÃÀú¸í : PRC_SUNGJUK_UPDATE()
+--â—‹ TBL_SUNGJUK í…Œì´ë¸”ì—ì„œ íŠ¹ì • í•™ìƒì˜ ì ìˆ˜
+--   (í•™ë²ˆ, êµ­ì–´ì ìˆ˜, ì˜ì–´ì ìˆ˜, ìˆ˜í•™ì ìˆ˜) ë°ì´í„° ìˆ˜ì • ì‹œ
+--   ì´ì , í‰ê· , ë“±ê¸‰ê¹Œì§€ ìˆ˜ì •í•˜ëŠ” í”„ë¡œì‹œì €ë¥¼ ìž‘ì„±í•œë‹¤.
+-- í”„ë¡œì‹œì €ëª… : PRC_SUNGJUK_UPDATE()
 /*
-½ÇÇà ¿¹)
+ì‹¤í–‰ ì˜ˆ)
 EXEC PRC_SUNGJUK_UPDATE(1,50,50,50);
 
-ÇÁ·Î½ÃÀú È£Ãâ·Î Ã³¸®µÈ °á°ú)
-ÇÐ¹ø  ÀÌ¸§  ±¹¾îÁ¡¼ö    ¿µ¾îÁ¡¼ö    ¼öÇÐÁ¡¼ö    ÃÑÁ¡  Æò±Õ  µî±Þ
- 1    ¹ÚÁ¾È£   50          50          50     150    50    F
+í”„ë¡œì‹œì € í˜¸ì¶œë¡œ ì²˜ë¦¬ëœ ê²°ê³¼)
+í•™ë²ˆ  ì´ë¦„  êµ­ì–´ì ìˆ˜    ì˜ì–´ì ìˆ˜    ìˆ˜í•™ì ìˆ˜    ì´ì   í‰ê·   ë“±ê¸‰
+ 1    ë°•ì¢…í˜¸   50          50          50     150    50    F
 */
 
 CREATE OR REPLACE PROCEDURE PRC_SUNGJUK_UPDATE
@@ -236,17 +235,17 @@ END;
 
 
 
---¡Û TBL_STUDENTS Å×ÀÌºí¿¡¼­ ÀüÈ­¹øÈ£¿Í ÁÖ¼Ò µ¥ÀÌÅÍ¸¦ ¼öÁ¤ÇÏ´Â(º¯°æÇÏ´Â)
---   ÇÁ·Î½ÃÀú¸¦ ÀÛ¼ºÇÑ´Ù.
---   ´Ü, ID¿Í PW°¡ ÀÏÄ¡ÇÏ´Â °æ¿ì¿¡¸¸ ¼öÁ¤À» ÁøÇàÇÒ ¼ö ÀÖµµ·Ï ÇÑ´Ù.
--- ÇÁ·Î½ÃÀú¸í : PRC_STUDENTS_UPDATE()
+--â—‹ TBL_STUDENTS í…Œì´ë¸”ì—ì„œ ì „í™”ë²ˆí˜¸ì™€ ì£¼ì†Œ ë°ì´í„°ë¥¼ ìˆ˜ì •í•˜ëŠ”(ë³€ê²½í•˜ëŠ”)
+--   í”„ë¡œì‹œì €ë¥¼ ìž‘ì„±í•œë‹¤.
+--   ë‹¨, IDì™€ PWê°€ ì¼ì¹˜í•˜ëŠ” ê²½ìš°ì—ë§Œ ìˆ˜ì •ì„ ì§„í–‰í•  ìˆ˜ ìžˆë„ë¡ í•œë‹¤.
+-- í”„ë¡œì‹œì €ëª… : PRC_STUDENTS_UPDATE()
 /*
-½ÇÇà ¿¹)
-EXEC PRC_STUDENTS_UPDATE('superman', 'java006$' ,'010-9999-9999','´ëÀü');
+ì‹¤í–‰ ì˜ˆ)
+EXEC PRC_STUDENTS_UPDATE('superman', 'java006$' ,'010-9999-9999','ëŒ€ì „');
 
-ÇÁ·Î½ÃÀú È£Ãâ·Î Ã³¸®µÈ °á°ú)
-superman    ±èÇö¿ì     010-9999-9999       ´ëÀü
-batman      ±èÁ¾¹ü     010-2222-2222       ¼­¿ï ¸¶Æ÷±¸
+í”„ë¡œì‹œì € í˜¸ì¶œë¡œ ì²˜ë¦¬ëœ ê²°ê³¼)
+superman    ê¹€í˜„ìš°     010-9999-9999       ëŒ€ì „
+batman      ê¹€ì¢…ë²”     010-2222-2222       ì„œìš¸ ë§ˆí¬êµ¬
 */
 
 CREATE OR REPLACE PROCEDURE PRC_STUDENTS_UPDATE
@@ -265,7 +264,7 @@ BEGIN
                                    WHERE V_PW = PW
                                 );
     
-    /* Á¶ÀÎ »ç¿ë
+    /* ì¡°ì¸ ì‚¬ìš©
     
     UPDATE (SELECT T1.ID, T1.PW, T2.TEL, T2.ADDR
             FROM TBL_IDPW T1 JOIN TBL_STUDENTS T2
@@ -277,22 +276,22 @@ BEGIN
     COMMIT;
     
 END;
---==>> Procedure PRC_STUDENTS_UPDATEÀÌ(°¡) ÄÄÆÄÀÏµÇ¾ú½À´Ï´Ù.
+--==>> Procedure PRC_STUDENTS_UPDATEì´(ê°€) ì»´íŒŒì¼ë˜ì—ˆìŠµë‹ˆë‹¤.
 
---¡Û TBL_INSA Å×ÀÌºíÀ» ´ë»óÀ¸·Î ½Å±Ô µ¥ÀÌÅÍ ÀÔ·Â ÇÁ·Î½ÃÀú¸¦ ÀÛ¼ºÇÑ´Ù.
--- NUM NAME SSN IBSADATE CITY TEL BUSEO JIKWI BASICPAY SUDANG ·Î ±¸¼ºµÈ ÄÃ·³ Áß
--- NAME SSN IBSADATE CITY TEL BUSEO JIKWI BASICPAY SUDANG µ¥ÀÌÅÍ ÀÔ·Â
--- ´Ü, ÀÔ·Â ½Ã NUM ÄÃ·³(»ç¿ø¹øÈ£)ÀÇ °ªÀº
--- ±âº» ºÎ¿©µÈ »ç¿ø ¹øÈ£ÀÇ ¸¶Áö¸· ¹øÈ£ ±× ´ÙÀ½ ¹øÈ£¸¦ ÀÚµ¿À¸·Î ÀÔ·Â Ã³¸®ÇÒ ¼ö ÀÖ´Â
--- ÇÁ·Î½ÃÀú·Î ±¸¼ºÇÑ´Ù.
--- ÇÁ·Î½ÃÀú¸í : PRC_INSA_INSERT();
+--â—‹ TBL_INSA í…Œì´ë¸”ì„ ëŒ€ìƒìœ¼ë¡œ ì‹ ê·œ ë°ì´í„° ìž…ë ¥ í”„ë¡œì‹œì €ë¥¼ ìž‘ì„±í•œë‹¤.
+-- NUM NAME SSN IBSADATE CITY TEL BUSEO JIKWI BASICPAY SUDANG ë¡œ êµ¬ì„±ëœ ì»¬ëŸ¼ ì¤‘
+-- NAME SSN IBSADATE CITY TEL BUSEO JIKWI BASICPAY SUDANG ë°ì´í„° ìž…ë ¥
+-- ë‹¨, ìž…ë ¥ ì‹œ NUM ì»¬ëŸ¼(ì‚¬ì›ë²ˆí˜¸)ì˜ ê°’ì€
+-- ê¸°ë³¸ ë¶€ì—¬ëœ ì‚¬ì› ë²ˆí˜¸ì˜ ë§ˆì§€ë§‰ ë²ˆí˜¸ ê·¸ ë‹¤ìŒ ë²ˆí˜¸ë¥¼ ìžë™ìœ¼ë¡œ ìž…ë ¥ ì²˜ë¦¬í•  ìˆ˜ ìžˆëŠ”
+-- í”„ë¡œì‹œì €ë¡œ êµ¬ì„±í•œë‹¤.
+-- í”„ë¡œì‹œì €ëª… : PRC_INSA_INSERT();
 /*
-½ÇÇà ¿¹)
-EXEC PRC_INSA_INSERT('¿ÀÁöÀº', '901212-2234567', SYSDATE, '¼­¿ï', '010-3213-6546', '¿µ¾÷ºÎ', '´ë¸®', 1000000, 200000);
+ì‹¤í–‰ ì˜ˆ)
+EXEC PRC_INSA_INSERT('ì˜¤ì§€ì€', '901212-2234567', SYSDATE, 'ì„œìš¸', '010-3213-6546', 'ì˜ì—…ë¶€', 'ëŒ€ë¦¬', 1000000, 200000);
 
-ÇÁ·Î½ÃÀú È£Ãâ·Î Ã³¸®µÈ °á°ú)
-1061 ¿ÀÁöÀº 901212-223467 19/9/26 ¼­¿ï 010-3213-6456 ¿µ¾÷ºÎ ´ë¸® 1000000 200000
---ÀÇ µ¥ÀÌÅÍ°¡ ½Å±Ô ÀÔ·ÂµÈ »óÈ²
+í”„ë¡œì‹œì € í˜¸ì¶œë¡œ ì²˜ë¦¬ëœ ê²°ê³¼)
+1061 ì˜¤ì§€ì€ 901212-223467 19/9/26 ì„œìš¸ 010-3213-6456 ì˜ì—…ë¶€ ëŒ€ë¦¬ 1000000 200000
+--ì˜ ë°ì´í„°ê°€ ì‹ ê·œ ìž…ë ¥ëœ ìƒí™©
 */
 
 CREATE OR REPLACE PROCEDURE PRC_INSA_INSERT
@@ -320,60 +319,60 @@ BEGIN
     COMMIT;
     
 END;
---==>> Procedure PRC_INSA_INSERTÀÌ(°¡) ÄÄÆÄÀÏµÇ¾ú½À´Ï´Ù.
+--==>> Procedure PRC_INSA_INSERTì´(ê°€) ì»´íŒŒì¼ë˜ì—ˆìŠµë‹ˆë‹¤.
 
 
---¡Û TBL_»óÇ°, TBL_ÀÔ°í Å×ÀÌºíÀ» ´ë»óÀ¸·Î
---   TBL_ÀÔ°í Å×ÀÌºí¿¡ µ¥ÀÌÅÍ ÀÔ·Â ½Ã(Áï, ÀÔ°í ÀÌº¥Æ® ¹ß»ý ½Ã)
---   TBL_»óÇ° Å×ÀÌºíÀÇ Àç°í¼ö·®ÀÌ ÇÔ²² º¯µ¿µÉ ¼ö ÀÖ´Â ±â´ÉÀ» °¡Áø
---   ÇÁ·Î½ÃÀú¸¦ ÀÛ¼ºÇÑ´Ù.
---   ´Ü, ÀÌ °úÁ¤¿¡¼­ ÀÔ°í¹øÈ£´Â ÀÚµ¿ Áõ°¡ Ã³¸®ÇÑ´Ù. (½ÃÄö½º »ç¿ë X)
---   TBL_ÀÔ°í Å×ÀÌºí ±¸¼º ÄÃ·³
---   : ÀÔ°í¹øÈ£, »óÇ°ÄÚµå, ÀÔ°íÀÏÀÚ, ÀÔ°í¼ö·®, ÀÔ°í´Ü°¡
--- ÇÁ·Î½ÃÀú¸í : PRC_ÀÔ°í_INSERT(»óÇ°ÄÚµå, ÀÔ°í¼ö·®, ÀÔ°í´Ü°¡)
+--â—‹ TBL_ìƒí’ˆ, TBL_ìž…ê³  í…Œì´ë¸”ì„ ëŒ€ìƒìœ¼ë¡œ
+--   TBL_ìž…ê³  í…Œì´ë¸”ì— ë°ì´í„° ìž…ë ¥ ì‹œ(ì¦‰, ìž…ê³  ì´ë²¤íŠ¸ ë°œìƒ ì‹œ)
+--   TBL_ìƒí’ˆ í…Œì´ë¸”ì˜ ìž¬ê³ ìˆ˜ëŸ‰ì´ í•¨ê»˜ ë³€ë™ë  ìˆ˜ ìžˆëŠ” ê¸°ëŠ¥ì„ ê°€ì§„
+--   í”„ë¡œì‹œì €ë¥¼ ìž‘ì„±í•œë‹¤.
+--   ë‹¨, ì´ ê³¼ì •ì—ì„œ ìž…ê³ ë²ˆí˜¸ëŠ” ìžë™ ì¦ê°€ ì²˜ë¦¬í•œë‹¤. (ì‹œí€€ìŠ¤ ì‚¬ìš© X)
+--   TBL_ìž…ê³  í…Œì´ë¸” êµ¬ì„± ì»¬ëŸ¼
+--   : ìž…ê³ ë²ˆí˜¸, ìƒí’ˆì½”ë“œ, ìž…ê³ ì¼ìž, ìž…ê³ ìˆ˜ëŸ‰, ìž…ê³ ë‹¨ê°€
+-- í”„ë¡œì‹œì €ëª… : PRC_ìž…ê³ _INSERT(ìƒí’ˆì½”ë“œ, ìž…ê³ ìˆ˜ëŸ‰, ìž…ê³ ë‹¨ê°€)
 
 SET SERVEROUTPUT ON;
 
-CREATE OR REPLACE PROCEDURE PRC_ÀÔ°í_INSERT
-( V_»óÇ°ÄÚµå    IN  TBL_»óÇ°.»óÇ°ÄÚµå%TYPE
-, V_ÀÔ°í¼ö·®    IN  TBL_ÀÔ°í.ÀÔ°í¼ö·®%TYPE
-, V_ÀÔ°í´Ü°¡    IN  TBL_ÀÔ°í.ÀÔ°í´Ü°¡%TYPE
+CREATE OR REPLACE PROCEDURE PRC_ìž…ê³ _INSERT
+( V_ìƒí’ˆì½”ë“œ    IN  TBL_ìƒí’ˆ.ìƒí’ˆì½”ë“œ%TYPE
+, V_ìž…ê³ ìˆ˜ëŸ‰    IN  TBL_ìž…ê³ .ìž…ê³ ìˆ˜ëŸ‰%TYPE
+, V_ìž…ê³ ë‹¨ê°€    IN  TBL_ìž…ê³ .ìž…ê³ ë‹¨ê°€%TYPE
 )
 IS
-    V_ÀÔ°í¹øÈ£  TBL_ÀÔ°í.ÀÔ°í¹øÈ£%TYPE;
+    V_ìž…ê³ ë²ˆí˜¸  TBL_ìž…ê³ .ìž…ê³ ë²ˆí˜¸%TYPE;
 BEGIN
     
-    SELECT NVL(MAX(ÀÔ°í¹øÈ£),0) INTO V_ÀÔ°í¹øÈ£
-    FROM TBL_ÀÔ°í;
+    SELECT NVL(MAX(ìž…ê³ ë²ˆí˜¸),0) INTO V_ìž…ê³ ë²ˆí˜¸
+    FROM TBL_ìž…ê³ ;
 
-    V_ÀÔ°í¹øÈ£ := V_ÀÔ°í¹øÈ£ + 1;
+    V_ìž…ê³ ë²ˆí˜¸ := V_ìž…ê³ ë²ˆí˜¸ + 1;
     
     
-    INSERT INTO TBL_ÀÔ°í(ÀÔ°í¹øÈ£, »óÇ°ÄÚµå, ÀÔ°í¼ö·®, ÀÔ°í´Ü°¡)
-    VALUES(V_ÀÔ°í¹øÈ£, V_»óÇ°ÄÚµå, V_ÀÔ°í¼ö·®, V_ÀÔ°í´Ü°¡);
+    INSERT INTO TBL_ìž…ê³ (ìž…ê³ ë²ˆí˜¸, ìƒí’ˆì½”ë“œ, ìž…ê³ ìˆ˜ëŸ‰, ìž…ê³ ë‹¨ê°€)
+    VALUES(V_ìž…ê³ ë²ˆí˜¸, V_ìƒí’ˆì½”ë“œ, V_ìž…ê³ ìˆ˜ëŸ‰, V_ìž…ê³ ë‹¨ê°€);
     
-    UPDATE TBL_»óÇ°
-    SET Àç°í¼ö·® = Àç°í¼ö·® + V_ÀÔ°í¼ö·®
-    WHERE »óÇ°ÄÚµå = V_»óÇ°ÄÚµå;
+    UPDATE TBL_ìƒí’ˆ
+    SET ìž¬ê³ ìˆ˜ëŸ‰ = ìž¬ê³ ìˆ˜ëŸ‰ + V_ìž…ê³ ìˆ˜ëŸ‰
+    WHERE ìƒí’ˆì½”ë“œ = V_ìƒí’ˆì½”ë“œ;
     
     COMMIT;
     
 END;
---==>> Procedure PRC_ÀÔ°í_INSERTÀÌ(°¡) ÄÄÆÄÀÏµÇ¾ú½À´Ï´Ù.
+--==>> Procedure PRC_ìž…ê³ _INSERTì´(ê°€) ì»´íŒŒì¼ë˜ì—ˆìŠµë‹ˆë‹¤.
 
 
---¡á¡á¡á ÇÁ·Î½ÃÀú ³»¿¡¼­ÀÇ ¿¹¿Ü Ã³¸® ¡á¡á¡á--
+--â– â– â–  í”„ë¡œì‹œì € ë‚´ì—ì„œì˜ ì˜ˆì™¸ ì²˜ë¦¬ â– â– â– --
 
---¡Û TBL_MEMBER Å×ÀÌºí¿¡ µ¥ÀÌÅÍ¸¦ ÀÔ·ÂÇÏ´Â ÇÁ·Î½ÃÀú¸¦ »ý¼º
---   ´Ü, ÀÌ ÇÁ·Î½ÃÀú¸¦ ÅëÇØ µ¥ÀÌÅÍ¸¦ ÀÔ·ÂÇÒ °æ¿ì
---   CITY(Áö¿ª) Ç×¸ñ¿¡ '¼­¿ï','°æ±â','´ëÀü'¸¸ ÀÔ·ÂÀÌ °¡´ÉÇÏµµ·Ï ±¸¼ºÇÑ´Ù.
---   ÀÌ Áö¿ª ¿ÜÀÇ ´Ù¸¥ Áö¿ªÀ» ÇÁ·Î½ÃÀú È£ÃâÀ» ÅëÇØ ÀÔ·ÂÇÏ°íÀÚ ÇÏ´Â °æ¿ì
---   (Áï, ÀÔ·ÂÀ» ½ÃµµÇÏ´Â °æ¿ì)
---   ¿¹¿Ü¿¡ ´ëÇÑ Ã³¸®¸¦ ÇÏ·Á°í ÇÑ´Ù.
--- ÇÁ·Î½ÃÀú¸í : PRC_MEMBER_INSERT();
+--â—‹ TBL_MEMBER í…Œì´ë¸”ì— ë°ì´í„°ë¥¼ ìž…ë ¥í•˜ëŠ” í”„ë¡œì‹œì €ë¥¼ ìƒì„±
+--   ë‹¨, ì´ í”„ë¡œì‹œì €ë¥¼ í†µí•´ ë°ì´í„°ë¥¼ ìž…ë ¥í•  ê²½ìš°
+--   CITY(ì§€ì—­) í•­ëª©ì— 'ì„œìš¸','ê²½ê¸°','ëŒ€ì „'ë§Œ ìž…ë ¥ì´ ê°€ëŠ¥í•˜ë„ë¡ êµ¬ì„±í•œë‹¤.
+--   ì´ ì§€ì—­ ì™¸ì˜ ë‹¤ë¥¸ ì§€ì—­ì„ í”„ë¡œì‹œì € í˜¸ì¶œì„ í†µí•´ ìž…ë ¥í•˜ê³ ìž í•˜ëŠ” ê²½ìš°
+--   (ì¦‰, ìž…ë ¥ì„ ì‹œë„í•˜ëŠ” ê²½ìš°)
+--   ì˜ˆì™¸ì— ëŒ€í•œ ì²˜ë¦¬ë¥¼ í•˜ë ¤ê³  í•œë‹¤.
+-- í”„ë¡œì‹œì €ëª… : PRC_MEMBER_INSERT();
 /*
-½ÇÇà ¿¹)
-EXEC PRC_MEMBER_INSERT('±èµ¿Çö', '010-1111-1111', '¼­¿ï');
+ì‹¤í–‰ ì˜ˆ)
+EXEC PRC_MEMBER_INSERT('ê¹€ë™í˜„', '010-1111-1111', 'ì„œìš¸');
 */
 
 
