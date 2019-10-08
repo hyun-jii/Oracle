@@ -76,7 +76,7 @@
       
  - 수강신청 테이블
    ① 수강신청 정보(수강신청코드, 학생번호, 개설과정코드)를 입력할 수 있다.
-      (수강신청코드는 'SU'로 시작하며, 제일 나중번호에 따라 자동으로 생성된다.)
+      (수강신청코드는 'SU'로 시작하여, 자동으로 입력되고, 제일 나중번호에 따라 자동으로 생성된다.)
    ② 수강신청 정보(학생번호, 개설과정코드)를 수정할 수 있다.
       (단, 수강신청한 과정의 개설일이나 개설과목의 시작일보다 이전이어야 한다.)
    ③ 수강신청 정보를 삭제할 수 있다.
@@ -92,9 +92,10 @@
    ③ 개설 과목 정보를 삭제할 수 있다.
       (단, 중간에 있는 하나의 과목을 삭제하게되어도 마지막 번호에 따라 번호가 매겨지게 된다.)
       
- - 성적 테이블
-   ① 관리자는 출결, 실기, 필기 총 배점 합이 100점이 넘지 않도록 설정한다.
+  - 성적 테이블
+   ① 관리자는 출결, 실기, 필기 총 배점 합이 100점이 넘지 않도록 입력할 수 있다.
    ② 출결, 실기, 필기 각각 배점은 교수자가 직접 입력할 수 있도록 한다.
+   ③ 학생에게 수강신청코드를 부여할 때, 개설과정코드에 대한 개설과목들의 성적이 기본값인 NULL 로 입력된다.
    
 2. 교수자
  - 로그인
@@ -1072,7 +1073,7 @@ EXEC PRC_DCOR_UPDATE('DC002', 'C006', 'R306', '2019-05-23');
 
 
 -- TRG_DCOR_DELETE : DCOR_TABLE(개설과정) 정보가 삭제될 때 수행될 트리거 생성
-CREATE OR REPLACE TRIGGER TRG_SCOR_DELETE
+CREATE OR REPLACE TRIGGER TRG_DCOR_DELETE
     BEFORE
     DELETE ON DCOR_TABLE                    -- 개설과정 테이블에서 삭제처리가 이루어질 때
     FOR EACH ROW
@@ -1087,7 +1088,7 @@ BEGIN
     WHERE DCOR_NO = :OLD.DCOR_NO;           -- 삭제하는 개설과정코드와 일치하는 정보를 삭제
     
 END;
---==>> Trigger TRG_SCOR_DELETE이(가) 컴파일되었습니다.
+--==>> Trigger TRG_DCOR_DELETE이(가) 컴파일되었습니다.
 
 
 
@@ -1489,71 +1490,13 @@ SELECT 과목명, 시작일, 종료일, 교재명, 학생번호, 학생명, 출결, 필기, 실기, 총점,
 FROM VIEW_PROF_SUNGJUK_OUT_F
 WHERE 교수번호 = 'P002';
 */
-
-
-CREATE OR REPLACE PROCEDURE PRC_PROF_SUNGJUK_INSERT     /*학생 성적 입력 프로시저*/
-( V_SUGNO   IN SUNG_TABLE.SUG_NO%TYPE
-, V_DSUBNO  IN SUNG_TABLE.DSUB_NO%TYPE
-, V_ATT     IN SUNG_TABLE.SUNG_ATT%TYPE
-, V_WRITE   IN SUNG_TABLE.SUNG_W%TYPE
-, V_PRAC    IN SUNG_TABLE.SUNG_P%TYPE
-)
-IS
-    S_SUGNO     SUG_TABLE.SUG_NO%TYPE;
-    S_DSUBNO    DSUB_TABLE.DSUB_NO%TYPE;
-    S_START     DSUB_TABLE.SUB_START%TYPE;
-    S_ATT       DSUB_TABLE.ATT_SCORE%TYPE;
-    S_W         DSUB_TABLE.W_SCORE%TYPE;
-    S_P         DSUB_TABLE.P_SCORE%TYPE;
-    ERROR1      EXCEPTION;
-    ERROR2      EXCEPTION;
-
-BEGIN
-    SELECT SUG_NO INTO S_SUGNO
-    FROM SUG_TABLE
-    WHERE SUG_NO = V_SUGNO;
-    
-    SELECT DSUB_NO, ATT_SCORE, W_SCORE, P_SCORE, SUB_START INTO S_DSUBNO, S_ATT, S_W, S_P, S_START
-    FROM DSUB_TABLE
-    WHERE DSUB_NO = V_DSUBNO;
-    
-    IF (SYSDATE < S_START)
-        THEN RAISE ERROR1;
-    END IF;
-    
-    IF (V_ATT > S_ATT) OR (V_WRITE > S_W) OR (V_PRAC > S_P)
-        THEN RAISE ERROR2;
-    END IF;
-    
-    IF ((V_SUGNO = S_SUGNO) AND (V_DSUBNO = S_DSUBNO))
-        THEN INSERT INTO SUNG_TABLE(SUG_NO, DSUB_NO, SUNG_ATT, SUNG_W, SUNG_P)
-        VALUES(S_SUGNO, S_DSUBNO, V_ATT, V_WRITE, V_PRAC);
-    END IF;
-    
-    EXCEPTION
-        WHEN ERROR1
-            THEN RAISE_APPLICATION_ERROR(-20100, '성적입력기간이 아닙니다.');
-            ROLLBACK;
-        WHEN ERROR2
-            THEN RAISE_APPLICATION_ERROR(-20101, '배점과 성적이 맞지 않습니다.');
-            ROLLBACK;
-    
-END;
---==>> Procedure PRC_PROF_SUNGJUK_INSERT이(가) 컴파일되었습니다.
-
-
-/*
--- EXEC PRC_PROF_SUNGJUK_INSERT('SU102', 'DS001', 20, 41, 40);
-수강신청번호, 개설과목코드를 기준으로 출결, 필기, 실기 점수를 입력하는 프로시저
-과목시작일이 현재보다 미래라면 예외발생, 
-개설과목 테이블에서 설정한 배점과 입력점수가 맞지 않으면 예외발생
-*/
  
 CREATE OR REPLACE PROCEDURE PRC_PROF_SUNGJUK_SAVE   /*(교수자 관점) 성적 저장 명령 프로시저*/
 ( V_INPUT   IN NUMBER
 )
 IS
 BEGIN
+    -- 교수가 확인 버튼을 누른다는 것을 1을 입력받았다고 가정하여, 1을 입력받으면 COMMIT
     IF (V_INPUT = 1)
         THEN DBMS_OUTPUT.PUT_LINE('저장 완료');
             COMMIT;
@@ -1580,22 +1523,38 @@ CREATE OR REPLACE PROCEDURE PRC_PROF_SUNGJUK_UPDATE     /*학생 성적 수정 프로시�
 IS
     S_SUGNO     SUG_TABLE.SUG_NO%TYPE;
     S_DSUBNO    DSUB_TABLE.DSUB_NO%TYPE;
+    S_START     DSUB_TABLE.SUB_START%TYPE;
     S_ATT       DSUB_TABLE.ATT_SCORE%TYPE;
     S_W         DSUB_TABLE.W_SCORE%TYPE;
     S_P         DSUB_TABLE.P_SCORE%TYPE;
+    TEMP_FAIL   NUMBER;
     ERROR1      EXCEPTION;
+    ERROR2      EXCEPTION;
+    ERROR3      EXCEPTION;
 BEGIN
     SELECT SUG_NO, DSUB_NO INTO S_SUGNO, S_DSUBNO
     FROM SUNG_TABLE
     WHERE SUG_NO = V_SUGNO
       AND DSUB_NO = V_DSUBNO;
       
-    SELECT ATT_SCORE, W_SCORE, P_SCORE INTO S_ATT, S_W, S_P
+    SELECT ATT_SCORE, W_SCORE, P_SCORE, SUB_START INTO S_ATT, S_W, S_P, S_START
     FROM DSUB_TABLE
     WHERE DSUB_NO = V_DSUBNO;
 
-    IF (V_ATT > S_ATT) OR (V_WRITE > S_W) OR (V_PRAC > S_P)
+    IF (SYSDATE < S_START)
         THEN RAISE ERROR1;
+    END IF;
+    
+    IF (V_ATT > S_ATT) OR (V_WRITE > S_W) OR (V_PRAC > S_P)
+        THEN RAISE ERROR2;
+    END IF;
+    
+    SELECT COUNT(*) INTO TEMP_FAIL
+    FROM FAIL_TABLE
+    WHERE SUG_NO = V_SUGNO;
+    
+    IF (TEMP_FAIL = 1)
+        THEN RAISE ERROR3;
     END IF;
 
     UPDATE SUNG_TABLE
@@ -1606,9 +1565,16 @@ BEGIN
 
     EXCEPTION
         WHEN ERROR1
+            THEN RAISE_APPLICATION_ERROR(-20100, '시작되지 않은 과목입니다.');
+            ROLLBACK;
+        WHEN ERROR2
             THEN RAISE_APPLICATION_ERROR(-20101, '배점과 성적이 맞지 않습니다.');
             ROLLBACK;
+        WHEN ERROR3
+            THEN RAISE_APPLICATION_ERROR(-20102, '중도탈락한 학생은 성적입력이 불가능합니다.');
+            ROLLBACK;
             
+    
 END;
 --==>> Procedure PRC_PROF_SUNGJUK_UPDATE이(가) 컴파일되었습니다.
 
@@ -1632,9 +1598,12 @@ BEGIN
     WHERE SUG_NO = V_SUGNO
       AND DSUB_NO = V_DSUBNO;
 
-    DELETE
-    FROM SUNG_TABLE
+    UPDATE SUNG_TABLE
+    SET SUNG_ATT = NULL
+      , SUNG_W = NULL
+      , SUNG_P = NULL
     WHERE SUG_NO = S_SUGNO AND DSUB_NO = S_DSUBNO;
+    
     
 END;
 --==>> Procedure PRC_PROF_SUNGJUK_DELETE이(가) 컴파일되었습니다.
@@ -1717,19 +1686,33 @@ ADD CONSTRAINT PROF_SSN_UK UNIQUE(PROF_SSN);
 
 CREATE OR REPLACE VIEW VIEW_USER_STU_F --탈락자만 출력
 AS
-SELECT  ST.STU_NAME "학생이름", SUNG.DSUB_NO "과목코드(과정명)", SUG.SUG_NO "수강신청(과목)코드", (SUNG.SUNG_ATT + SUNG.SUNG_W + SUNG.SUNG_P)"수강과목총점", DECODE(FL.FAIL_DATE, NULL, 'N', 'Y') "탈락여부"
+SELECT  ST.STU_NAME "학생이름", SUNG.DSUB_NO "과목코드", SUG.SUG_NO "수강신청코드", (SUNG.SUNG_ATT + SUNG.SUNG_W + SUNG.SUNG_P)"수강과목총점", DECODE(FL.FAIL_DATE, NULL, 'N', 'Y') "탈락여부"
 FROM SUG_TABLE SUG  JOIN  SUNG_TABLE SUNG ON  SUG.SUG_NO = SUNG.SUG_NO
                                     JOIN  FAIL_TABLE FL ON  SUG.SUG_NO = FL.SUG_NO
                                     JOIN  STU_TABLE ST ON  SUG.STU_ID = ST.STU_ID;
+
+                                    
 --==>>View VIEW_USER_STU_F이(가) 생성되었습니다.
 
 
-CREATE OR REPLACE VIEW VIEW_USER_STU  --전체출력
-AS
-SELECT S.STU_NAME "학생이름", U.SUG_NO "수강신청코드", (N.SUNG_ATT + N.SUNG_W + N.SUNG_P) "수강총점",  F.FAIL_DATE "탈락일자"
-FROM STU_TABLE S, SUG_TABLE U, FAIL_TABLE F, SUNG_TABLE N 
-WHERE  U.SUG_NO = N.SUG_NO
-ORDER BY S.STU_NAME;
+--전체 출력
+CREATE OR REPLACE VIEW VIEW_USER_STU 
+AS 
+SELECT STU.STU_NAME "학생이름", SUG.SUG_NO "수강신청코드"
+      ,SS.SUB_NAME "과목명" ,SUNG.SUNG_ATT + SUNG.SUNG_W + SUNG.SUNG_P "수강총점"
+      ,DECODE(FL.FAIL_DATE, NULL, 'N', 'Y') "탈락여부" 
+FROM STU_TABLE STU LEFT JOIN SUG_TABLE SUG
+                                       ON STU.STU_ID = SUG.STU_ID
+                                   LEFT  JOIN SUNG_TABLE SUNG 
+                                       ON SUG.SUG_NO = SUNG.SUG_NO
+                                   LEFT JOIN FAIL_TABLE FL
+                                        ON SUG.SUG_NO = FL.SUG_NO 
+                                   LEFT JOIN DSUB_TABLE DS
+                                        ON SUNG.DSUB_NO = DS.DSUB_NO
+                                   LEFT JOIN SSUB_TABLE SS
+                                        ON SS.SSUB_NO = DS.SSUB_NO
+ORDER BY STU.STU_NAME;
+
 --==>>View VIEW_USER_STU이(가) 생성되었습니다.
 
 
@@ -1853,7 +1836,7 @@ CREATE OR REPLACE TRIGGER TRG_SCOR_DELETE
                    FOR EACH ROW
 BEGIN
     DELETE
-    FROM SCOR_TABLE
+    FROM DCOR_TABLE
     WHERE SCOR_NO = :OLD.SCOR_NO;
 END;
 --==>> Trigger TRG_SCOR_DELETE이(가) 컴파일되었습니다.
@@ -1864,12 +1847,11 @@ CREATE OR REPLACE PROCEDURE PRC_PROF_INSERT
 ( V_PROF_ID         IN  PROF_TABLE.PROF_ID%TYPE
 , V_PROF_NAME       IN  PROF_TABLE.PROF_NAME%TYPE
 , V_PROF_SSN        IN  PROF_TABLE.PROF_SSN%TYPE
-, V_PROF_PW         IN  PROF_TABLE.PROF_PW%TYPE
 )
 IS
 BEGIN
-    INSERT INTO PROF_TABLE
-    VALUES(V_PROF_ID, V_PROF_NAME, V_PROF_SSN, V_PROF_PW);
+    INSERT INTO PROF_TABLE(PROF_ID, PROF_NAME, PROF_SSN)
+    VALUES(V_PROF_ID, V_PROF_NAME, V_PROF_SSN);
     
     COMMIT;
     
@@ -1881,13 +1863,13 @@ END;
 CREATE OR REPLACE PROCEDURE PRC_PROF_UPDATE
 ( V_PROF_ID         IN      PROF_TABLE.PROF_ID%TYPE 
 , V_PROF_NAME       IN      PROF_TABLE.PROF_NAME%TYPE
-, V_PROF_PW         IN      PROF_TABLE.PROF_PW%TYPE
+, V_PROF_SSN        IN      PROF_TABLE.PROF_SSN%TYPE
 )
 IS
 BEGIN
     -- PROF_TABLE(교수테이블) 이름, 비밀번호 업데이트
     UPDATE PROF_TABLE
-    SET PROF_NAME = V_PROF_NAME, PROF_PW = V_PROF_PW
+    SET PROF_NAME = V_PROF_NAME, PROF_SSN = V_PROF_SSN
     WHERE PROF_ID = V_PROF_ID;
     
 END;
@@ -2346,9 +2328,9 @@ END;
 */
 
 
-CREATE OR REPLACE PROCEDURE PRC_BOOK_INSERT         -- 교재 테이블 데이터 입력 프로시저
-( V_BOOK_NAME   IN      BOOK_TABLE.BOOK_NAME%TYPE   -- 입력할 교재명
-, V_BOOK_PUB    IN      BOOK_TABLE.BOOK_PUB%TYPE    -- 입력할 출판사명
+CREATE OR REPLACE PROCEDURE PRC_BOOK_INSERT -- 교재 테이블 데이터 입력 프로시저
+( V_BOOK_NAME   IN      BOOK_TABLE.BOOK_NAME%TYPE -- 입력할 교재명
+, V_BOOK_PUB    IN      BOOK_TABLE.BOOK_PUB%TYPE  -- 입력할 출판사명
 )
 IS
     TEMP_MAX    NUMBER; -- NUMBERING을 하기위한 변수선언
@@ -2356,14 +2338,17 @@ BEGIN
         SELECT MAX(TO_NUMBER(SUBSTR(BOOK_NO, 2))) INTO TEMP_MAX -- 등록된 교재번호 중 마지막 값 변수에 저장
         FROM BOOK_TABLE;
         
-        IF (TEMP_MAX >= 10 AND TEMP_MAX < 100) -- 등록된 마지막 교재번호가 두 자릿수일 경우
+        IF (TEMP_MAX+1 >= 1 AND TEMP_MAX+1 < 10)
+            THEN INSERT INTO BOOK_TABLE VALUES(('B00' || (TEMP_MAX+1)) , V_BOOK_NAME, V_BOOK_PUB);
+        ELSIF (TEMP_MAX+1 >= 10 AND TEMP_MAX+1 < 100) -- 등록된 마지막 교재번호가 두 자릿수일 경우
             THEN INSERT INTO BOOK_TABLE VALUES(('B0' || (TEMP_MAX+1)) , V_BOOK_NAME, V_BOOK_PUB);
-        ELSIF (TEMP_MAX >= 100) -- 등록된 마지막 교재번호가 세 자릿수일 경우
+        ELSIF (TEMP_MAX+1 >= 100) -- 등록된 마지막 교재번호가 세 자릿수일 경우
             THEN INSERT INTO BOOK_TABLE VALUES(('B' || (TEMP_MAX+1)) , V_BOOK_NAME, V_BOOK_PUB);
         END IF;
         
         COMMIT;
 END;
+
 --==>> Procedure PRC_BOOK_INSERT이(가) 컴파일되었습니다.
 
 
@@ -2398,24 +2383,63 @@ END;
 --==>> Procedure PRC_BOOK_DELETE이(가) 컴파일되었습니다.
 
 
-CREATE OR REPLACE PROCEDURE PRC_SUG_INSERT      -- 수강신청 테이블 데이터 입력 프로시저
-( V_STU_ID      IN      SUG_TABLE.STU_ID%TYPE   -- 입력할 학생번호
-, V_DCOR_NO     IN      SUG_TABLE.DCOR_NO%TYPE  -- 입력할 개설과정코드
+CREATE OR REPLACE PROCEDURE PRC_SUG_INSERT -- 수강신청 테이블 데이터 입력 프로시저
+( V_STU_ID      IN      SUG_TABLE.STU_ID%TYPE -- 입력할 학생번호
+, V_DCOR_NO     IN      SUG_TABLE.DCOR_NO%TYPE -- 입력할 개설과정코드
 )
 IS
     TEMP_NUMBER NUMBER; -- 수강신청 테이블 내 마지막 코드값을 담을 변수선언
+    
+    V_DCOR_NON SUG_TABLE.DCOR_NO%TYPE;
+    V_COUNTER NUMBER;
+    V_START NUMBER;
+    V_START_COUNTER NUMBER;
+    V_SUG_NO SUG_TABLE.SUG_NO%TYPE;
+    COUNTER NUMBER;
 BEGIN
         SELECT MAX(TO_NUMBER(SUBSTR(SUG_NO, 3))) INTO TEMP_NUMBER -- 마지막 코드값 담기
         FROM SUG_TABLE;
-        
-        IF (TEMP_NUMBER >= 10 AND TEMP_NUMBER < 100) -- 마지막 코드값이 두 자릿수인 경우
+
+        IF (TEMP_NUMBER+1 >=1 AND TEMP_NUMBER+1 < 10)
+            THEN INSERT INTO SUG_TABLE VALUES(('SU00' || (TEMP_NUMBER+1)), V_STU_ID, V_DCOR_NO);
+        ELSIF (TEMP_NUMBER+1 >= 10 AND TEMP_NUMBER+1 < 100) -- 마지막 코드값이 두 자릿수인 경우
             THEN INSERT INTO SUG_TABLE VALUES(('SU0' || (TEMP_NUMBER+1)), V_STU_ID, V_DCOR_NO);
-        ELSIF (TEMP_NUMBER >= 100) -- 마지막 코드값이 세 자릿수인 경우
+        ELSIF (TEMP_NUMBER+1 >= 100) -- 마지막 코드값이 세 자릿수인 경우
             THEN INSERT INTO SUG_TABLE VALUES(('SU' || (TEMP_NUMBER+1)), V_STU_ID, V_DCOR_NO);
         END IF;
         
         COMMIT;
         
+        
+                SELECT DCOR_NO INTO V_DCOR_NON
+                FROM SUG_TABLE
+                WHERE SUG_NO = (SELECT MAX(SUG_NO)
+                                FROM SUG_TABLE);
+                                
+        
+                SELECT SUG_NO INTO V_SUG_NO
+                FROM SUG_TABLE
+                WHERE SUG_NO = (SELECT MAX(SUG_NO)
+                                FROM SUG_TABLE);
+                
+                SELECT COUNT(DSUB_NO) INTO V_COUNTER
+                FROM DSUB_TABLE
+                WHERE DCOR_NO = V_DCOR_NON;
+                
+                SELECT MIN(TO_NUMBER(SUBSTR(DSUB_NO,3))) INTO V_START
+                FROM DSUB_TABLE
+                WHERE DCOR_NO = V_DCOR_NON;
+                
+                V_START_COUNTER := V_START;
+                
+                FOR COUNTER IN V_START .. (V_COUNTER + V_START -1) LOOP  
+                    INSERT INTO SUNG_TABLE VALUES(V_SUG_NO, ('DS' || LPAD(V_START_COUNTER,3,0)), NULL, NULL, NULL);
+                    V_START_COUNTER := V_START_COUNTER + 1;
+                END LOOP;
+                
+                COMMIT;
+       
+
 END;
 --==>> Procedure PRC_SUG_INSERT이(가) 컴파일되었습니다.
 
@@ -2493,11 +2517,11 @@ BEGIN
         THEN RAISE USER_DEFINE_ERROR2;
     END IF;
     
-    IF (TEMP_NUMBER >=1 AND TEMP_NUMBER < 10) -- 개설과목코드의 숫자부분이 한 자릿수 일 때
+    IF ((TEMP_NUMBER+1) >=1 AND (TEMP_NUMBER+1) < 10) -- 개설과목코드의 숫자부분이 한 자릿수 일 때
         THEN INSERT INTO DSUB_TABLE VALUES(('DS00' || (TEMP_NUMBER+1)), V_DCOR_NO, V_SSUB_NO, V_SUB_START, V_SUB_END, NULL, NULL, NULL, V_PROF_ID, V_BOOK_NO);
-    ELSIF (TEMP_NUMBER >= 10 AND TEMP_NUMBER < 100) -- 개설과목코드의 숫자부분이 두 자릿수 일 때
+    ELSIF ((TEMP_NUMBER+1) >= 10 AND (TEMP_NUMBER+1) < 100) -- 개설과목코드의 숫자부분이 두 자릿수 일 때
         THEN INSERT INTO DSUB_TABLE VALUES(('DS0' || (TEMP_NUMBER+1)), V_DCOR_NO, V_SSUB_NO, V_SUB_START, V_SUB_END, NULL, NULL, NULL, V_PROF_ID, V_BOOK_NO);
-    ELSIF (TEMP_NUMBER >= 100) -- 개설과목코드의 숫자부분이 세 자릿수 일 때
+    ELSIF ((TEMP_NUMBER+1) >= 100) -- 개설과목코드의 숫자부분이 세 자릿수 일 때
         THEN INSERT INTO DSUB_TABLE VALUES(('DS' || (TEMP_NUMBER+1)), V_DCOR_NO, V_SSUB_NO, V_SUB_START, V_SUB_END, NULL, NULL, NULL, V_PROF_ID, V_BOOK_NO);
     END IF;
     
@@ -2535,7 +2559,7 @@ BEGIN
                      FROM DSUB_TABLE
                      WHERE DSUB_NO = V_DSUB_NO);
     
-    SELECT MAX(T.과목끝일) INTO TEMP_DSUB_BEF_END -- 해당 개설과목에 바로 앞선 개설과목의 종료일 저장
+    SELECT MAX(T.과목끝일) INTO TEMP_DSUB_BEF_END -- 해당 개설과목에 바로 뒤에오는 개설과목의 시작일 저장
     FROM
     ( 
         SELECT SUB_END"과목끝일"
@@ -2632,3 +2656,4 @@ END;
 -- 커밋
 COMMIT;
 --==>> 커밋 완료.
+
