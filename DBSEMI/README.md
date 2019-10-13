@@ -4,6 +4,8 @@
 
 - 성적 처리 관련 시스템 데이터베이스 논리적 설계 및 물리적 설계, 총 12개의 테이블로 구성  
 
+![DB설계](https://user-images.githubusercontent.com/54610824/66711122-e00d9100-edc0-11e9-8069-f95e4c8df4c5.png)
+
 ### 테이블 구조
 
 - 관리자 테이블 SYS_TABLE  
